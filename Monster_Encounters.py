@@ -1,7 +1,7 @@
 # Importing the random module to generate random positions for the goal and exit points.
 import random
 
-# The DungeonCrawler class manages the game, including the grid, player, goal, and exit.
+# The DungeonCrawler class manages the game, including the grid, player, goal, exit, and monsters.
 class DungeonCrawler:
     def __init__(self, grid_size=5):
         # Initialize the grid size and create a 2D grid filled with empty spaces.
@@ -25,6 +25,21 @@ class DungeonCrawler:
         self.grid[self.goal[0]][self.goal[1]] = 'G'
         self.grid[self.exit[0]][self.exit[1]] = 'E'
 
+    #     # Initialize monsters and generate them on the grid.
+    #     self.monsters = []
+    #     self.generate_monsters()
+
+    # def generate_monsters(self):
+    #     # Generate a few monsters and place them on the grid.
+    #     for _ in range(3):  # Number of monsters
+    #         while True:
+    #             monster_position = (random.randint(0, self.grid_size - 1), random.randint(0, self.grid_size - 1))
+    #             if monster_position not in [self.goal, self.exit, (0, 0)] and monster_position not in [m.position for m in self.monsters]:
+    #                 monster = Monster(monster_position[0], monster_position[1])
+    #                 self.monsters.append(monster)
+    #                 self.grid[monster_position[0]][monster_position[1]] = 'M'
+    #                 break
+
     # Display the current state of the grid to the player.
     def display_grid(self):
         for row in self.grid:
@@ -44,12 +59,18 @@ class DungeonCrawler:
                 # Move the player and check their new position.
                 self.player.move(move, self.grid_size)
                 self.check_position()
+                # self.move_monsters()
             else:
                 print("Invalid move. Try again.")
 
-    # Check the player's current position and determine if they reached the goal or exit.
+    # Check the player's current position and determine if they reached the goal, exit, or encountered a monster.
     def check_position(self):
         x, y = self.player.position
+        # for monster in self.monsters:
+        #     if (x, y) == monster.position:
+        #         print("You encountered a monster!")
+        #         self.combat(monster)
+        #         return
         if (x, y) == self.goal:
             # Notify the player when they reach the goal and clear the goal from the grid.
             print("You found the goal!")
@@ -64,11 +85,43 @@ class DungeonCrawler:
             print(f"Player is now at position ({x}, {y}).")
         self.display_grid()
 
+    # def combat(self, monster):
+    #     print(f"Combat initiated with Monster (HP: {monster.health}, ATK: {monster.attack}, DEF: {monster.defense})!")
+    #     while self.player.health > 0 and monster.health > 0:
+    #         # Player attacks monster
+    #         damage_to_monster = max(0, self.player.attack - monster.defense)
+    #         monster.health -= damage_to_monster
+    #         print(f"You dealt {damage_to_monster} damage to the monster. Monster HP: {monster.health}")
+
+    #         if monster.health <= 0:
+    #             print("You defeated the monster!")
+    #             self.monsters.remove(monster)
+    #             self.grid[monster.position[0]][monster.position[1]] = ' '
+    #             return
+
+    #         # Monster attacks player
+    #         damage_to_player = max(0, monster.attack - self.player.defense)
+    #         self.player.health -= damage_to_player
+    #         print(f"The monster dealt {damage_to_player} damage to you. Your HP: {self.player.health}")
+
+    #         if self.player.health <= 0:
+    #             print("You were defeated by the monster. Game over!")
+    #             exit()
+
+    # def move_monsters(self):
+    #     for monster in self.monsters:
+    #         self.grid[monster.position[0]][monster.position[1]] = ' '  # Clear old position
+    #         monster.move(self.grid_size)
+    #         self.grid[monster.position[0]][monster.position[1]] = 'M'  # Mark new position
+
 # The Player class represents the player character and handles movement within the grid.
 class Player:
     def __init__(self, x, y):
         # Initialize the player's starting position.
         self.position = (x, y)
+        # self.health = 100
+        # self.attack = 10
+        # self.defense = 5
 
     # Move the player in the specified direction, ensuring they stay within the grid boundaries.
     def move(self, direction, grid_size):
@@ -87,4 +140,25 @@ class Player:
             return
         # Update the player's position after a valid move.
         self.position = (x, y)
+
+# # The Monster class represents a monster in the grid with attributes and movement logic.
+# class Monster:
+#     def __init__(self, x, y):
+#         self.position = (x, y)
+#         self.health = 50
+#         self.attack = 8
+#         self.defense = 3
+
+#     def move(self, grid_size):
+#         x, y = self.position
+#         direction = random.choice(['up', 'down', 'left', 'right'])
+#         if direction == 'up' and x > 0:
+#             x -= 1
+#         elif direction == 'down' and x < grid_size - 1:
+#             x += 1
+#         elif direction == 'left' and y > 0:
+#             y -= 1
+#         elif direction == 'right' and y < grid_size - 1:
+#             y += 1
+#         self.position = (x, y)
 

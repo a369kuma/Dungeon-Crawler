@@ -25,6 +25,21 @@ class DungeonCrawler:
         self.grid[self.goal[0]][self.goal[1]] = 'G'
         self.grid[self.exit[0]][self.exit[1]] = 'E'
 
+    #     # Initialize puzzles and generate them.
+    #     self.puzzles = {}
+    #     self.generate_puzzles()
+
+    # # Generate puzzle elements and place them on the grid.
+    # def generate_puzzles(self):
+    #     puzzle_types = ['Lever', 'Door', 'Bridge']
+    #     for puzzle_type in puzzle_types:
+    #         while True:
+    #             puzzle_position = (random.randint(0, self.grid_size - 1), random.randint(0, self.grid_size - 1))
+    #             if puzzle_position not in [self.goal, self.exit, (0, 0)] and puzzle_position not in self.puzzles:
+    #                 self.puzzles[puzzle_position] = puzzle_type
+    #                 self.grid[puzzle_position[0]][puzzle_position[1]] = 'P'
+    #                 break
+
     # Display the current state of the grid to the player.
     def display_grid(self):
         for row in self.grid:
@@ -44,10 +59,13 @@ class DungeonCrawler:
                 # Move the player and check their new position.
                 self.player.move(move, self.grid_size)
                 self.check_position()
+            # elif move == 'hint':
+            #     # Provide a hint if the player requests it.
+            #     self.provide_hint()
             else:
                 print("Invalid move. Try again.")
 
-    # Check the player's current position and determine if they reached the goal or exit.
+    # Check the player's current position and determine if they reached the goal, exit, or a puzzle.
     def check_position(self):
         x, y = self.player.position
         if (x, y) == self.goal:
@@ -59,10 +77,46 @@ class DungeonCrawler:
             # Notify the player when they reach the exit after finding the goal.
             print("You reached the exit. You win!")
             exit()
+        # elif (x, y) in self.puzzles:
+        #     # Notify the player when they encounter a puzzle and solve it.
+        #     puzzle = self.puzzles[(x, y)]
+        #     print(f"You encountered a {puzzle} puzzle!")
+        #     self.solve_puzzle(puzzle, (x, y))
         else:
             # Inform the player of their current position.
             print(f"Player is now at position ({x}, {y}).")
         self.display_grid()
+
+    # # Solve the encountered puzzle based on its type.
+    # def solve_puzzle(self, puzzle, position):
+    #     if puzzle == 'Lever':
+    #         print("You need to pull the lever to unlock a doorway.")
+    #         action = input("Pull the lever? (yes/no): ").strip().lower()
+    #         if action == 'yes':
+    #             print("You pulled the lever. A doorway is now unlocked!")
+    #             self.puzzles.pop(position)
+    #             self.grid[position[0]][position[1]] = ' '
+    #         else:
+    #             print("You chose not to pull the lever.")
+    #     elif puzzle == 'Door':
+    #         print("The door is locked. Find the lever to unlock it.")
+    #     elif puzzle == 'Bridge':
+    #         print("The bridge is broken. Solve the puzzle to repair it.")
+    #         action = input("Solve the bridge puzzle? (yes/no): ").strip().lower()
+    #         if action == 'yes':
+    #             print("You solved the puzzle and repaired the bridge!")
+    #             self.puzzles.pop(position)
+    #             self.grid[position[0]][position[1]] = ' '
+    #         else:
+    #             print("You chose not to solve the bridge puzzle.")
+
+    # # Provide a hint for solving puzzles.
+    # def provide_hint(self):
+    #     if self.puzzles:
+    #         hint_position, hint_puzzle = next(iter(self.puzzles.items()))
+    #         print(f"Hint: There is a {hint_puzzle} puzzle at position {hint_position}.")
+    #     else:
+    #         print("No puzzles left to solve!")
 
 # The Player class represents the player character and handles movement within the grid.
 class Player:
@@ -87,4 +141,8 @@ class Player:
             return
         # Update the player's position after a valid move.
         self.position = (x, y)
+
+    # # Request a hint from the dungeon.
+    # def request_hint(self, dungeon):
+    #     dungeon.provide_hint()
 
